@@ -1,0 +1,55 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {english}{}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {1}Things to do}{4}{chapter.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.1}Things to do}{4}{section.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}Introduction}{5}{chapter.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Team and Contribution}{5}{section.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}Motivation}{5}{section.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {3}Description of Data}{6}{chapter.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Data Collection and Access}{6}{section.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Noteworthy Features}{6}{section.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {4}Analysis of Data Quality}{7}{chapter.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.1}Data Quality}{7}{section.4.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.2}Procedure}{7}{section.4.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Main Analysis (Exploratory Data Analysis)}{8}{chapter.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.1}Description of Findings}{8}{section.5.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.2}Challenges}{8}{section.5.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Executive Summary}{9}{chapter.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.1}Presentation}{9}{section.6.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {7}Interactive Component}{10}{chapter.7}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.1}Interaction 1}{10}{section.7.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.2}Interaction 2}{10}{section.7.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {8}Conclusion}{11}{chapter.8}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.1}Limitations}{11}{section.8.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.2}Future Directions}{11}{section.8.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {9}Bibliography}{12}{chapter.9}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {9.1}Graph}{12}{section.9.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {9.2}Packages}{12}{section.9.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {9.3}Data Source}{12}{section.9.3}
+\contentsfinish 

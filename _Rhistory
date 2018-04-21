@@ -1,0 +1,512 @@
+columns = 2:10,
+groupColumn ='Group.1' )+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+df_3pct_max = aggregate(df_3pct[,3:12], list(df_3pct$Team_Name), max)
+p2 = ggparcoord(df_3pct_max,
+columns = 2:10,
+groupColumn ='Group.1' )+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p2)
+## Max within team
+df_3pct_max = aggregate(df_3pct[,3:12], list(df_3pct$Team_Name), max)
+#df_3pct_max
+p2 = ggparcoord(df_3pct_max,
+columns = 2:10,
+groupColumn ='Group.1' )+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Parallel Coordinates Plot",x = 'Indicator', y='Max')
+ggplotly(p2)
+df_3pct
+df_3pct_max
+p2 = ggparcoord(df_3pct_max,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax' )+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Parallel Coordinates Plot",x = 'Indicator', y='Max')
+ggplotly(p2)
+## Average within team
+library(GGally)
+library(ggplot2)
+library(plotly)
+df_3pct_mean = aggregate(df_3pct[,3:12], list(df_3pct$Team_Name), mean)
+df_3pct_mean
+p1 = ggparcoord(df_3pct_mean,
+columns = 2:10,
+groupColumn ='Group.1' )+
+geom_vline(xintercept = 2:11, color = "lightblue",
+scale = 'globalminmax')+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+## Average within team
+library(GGally)
+library(ggplot2)
+library(plotly)
+df_3pct_mean = aggregate(df_3pct[,3:12], list(df_3pct$Team_Name), mean)
+df_3pct_mean
+p1 = ggparcoord(df_3pct_mean,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+p1 = ggparcoord(df_3pct_mean,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+## Max within team
+df_3pct_max = aggregate(df_3pct[,3:12], list(df_3pct$Team_Name), max)
+#df_3pct_max
+p2 = ggparcoord(df_3pct_max,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax' )+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Max Parallel Coordinates Plot",x = 'Indicator', y='Max')
+ggplotly(p2)
+df_3pct_max
+df_3fgm
+df_3fgm
+df_3fgm
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum)
+df_3fgm_sum
+## Max within team
+df_3pct_max = aggregate(df_3pct[,3:12], list(df_3pct$Team_Name), max, na.rm = TRUE)
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum, na.rm = TRUE)
+df_3fgm_sum
+df_3pct
+data.frame(a = c(1,2,3),b = c(4,5,6),c = c(7,8,9))
+test1 = data.frame(a = c(1,2,3),b = c(4,5,6),c = c(7,8,9))
+test2 = data.frame(a = c(10,20,30),b = c(40,50,60),c = c(70,80,90))
+test1/test2
+df_3fgm/df_3pct
+test1
+df_3fgm
+deno = df_3fgm/df_3pct
+deno
+deno$player_name = df_3fgm$player_name
+deno$player_id = df_3fgm$player_id
+deno$Team_Name = df_3fgm$Team_Name
+deno
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+deno_modi
+df_3fgm_sum
+df_3fgm_sum/deno_modi
+average3point = df_3fgm_sum/deno_modi
+average3point$Group.1=deno_modi$Group.1
+average3
+average3point
+p1 = ggparcoord(average3point,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+# average within group
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_3fgm/df_3pct
+deno$player_name = df_3fgm$player_name
+deno$player_id = df_3fgm$player_id
+deno$Team_Name = df_3fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+average3point = df_3fgm_sum/deno_modi
+average3point$Group.1=deno_modi$Group.1
+#average3point
+p1 = ggparcoord(average3point,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+df_fgm_sum = aggregate(df_fgm[,3:12], list(df_fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_fgm/df_pct
+deno$player_name = df_fgm$player_name
+deno$player_id = df_fgm$player_id
+deno$Team_Name = df_fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+averagepoint = df_fgm_sum/deno_modi
+averagepoint$Group.1=deno_modi$Group.1
+p1 = ggparcoord(averagepoint,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+# average within group 3point
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_3fgm/df_3pct
+deno$player_name = df_3fgm$player_name
+deno$player_id = df_3fgm$player_id
+deno$Team_Name = df_3fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+average3point = df_3fgm_sum/deno_modi
+average3point$Group.1=deno_modi$Group.1
+#average3point
+p1 = ggparcoord(average3point,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for 3 points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+# average within group all point
+df_fgm_sum = aggregate(df_fgm[,3:12], list(df_fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_fgm/df_pct
+deno$player_name = df_fgm$player_name
+deno$player_id = df_fgm$player_id
+deno$Team_Name = df_fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+averagepoint = df_fgm_sum/deno_modi
+averagepoint$Group.1=deno_modi$Group.1
+#averagepoint
+p1 = ggparcoord(averagepoint,
+columns = 2:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for all points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+averagepoint
+ggplot()+
+geom_point(averagepoint,aes(overall,X10sec_down_3,color = Group.1))
+ggplot(averagepoint)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1))
+ggplot(averagepoint)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)
+ggplot(averagepoint)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+averagepoint
+ggplot(averagepoint)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+ggplot(average3point)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+knitr::opts_chunk$set(warning = FALSE,
+message = FALSE,
+cache = FALSE)
+library(GGally)
+library(ggplot2)
+library(plotly)
+## Preprocess data to merge with the team
+df_name_team = read.csv(file="C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/Name_Team.csv")
+df_name_team = df_name_team[,c("PERSON_ID","Team_Name")]
+colnames(df_name_team)[1] = "player_id"
+my_read = function(path,team=df_name_team){
+temp = read.csv(file=path)
+final = merge(temp,team,by = "player_id",all=TRUE)
+return(final[ ,!(colnames(final) == "X")])
+}
+df_3pct = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/3pct_df.csv")
+df_3fgm = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/3fgm_df.csv")
+df_3 = merge(df_3fgm,df_3pct,by = "player_id",all=TRUE)
+df_pct = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/pct_df.csv")
+df_fgm = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/fgm_df.csv")
+df_all = merge(df_fgm,df_pct,by = "player_id",all=TRUE)
+df_pts = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/pts_df.csv")
+df_fta = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/fta_df.csv")
+df_fct = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/fct_df.csv")
+df_ftm = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/ftm_df.csv")
+# Define FGA: Field Goal Attempt
+FGA = df_fgm$overall / df_fct$overall
+# Define TSP: True shooting percent
+TSP = df_pts$overall/(2*(FGA+0.44*df_fta$overall))
+df_pts['TSP'] = TSP
+# Make a copy of df_pts
+df_pts_v1 = df_pts
+# Subset to remove all the NAs due to players that did not have a team or did not play in 2016
+df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
+p_TSP = ggplot(df_pts_v1_2)+
+geom_point(aes(overall,TSP,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "TSP V.S PTS ",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP)
+p_TSP_All = ggplot(df_pts_v1_2)+
+geom_point(aes(overall,TSP,color = player_name，shape = Team_Name),size = 2)+
+labs(title = "TSP V.S PTS ",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP_All)
+df_pct['df_fgm_overall']=df_fgm$overall
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+p_FGMPCT = ggplot(df_pct_v1_2)+
+geom_point(aes(df_fgm_overall,overall,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "pct_overall V.S fgm_overall ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT)
+p_FGMPCT_All = ggplot(df_pct_v1_2)+
+geom_point(aes(df_fgm_overall,overall,color = player_name,shape = Team_Name),size = 2)+
+labs(title = "pct_overall V.S fgm_overall ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT_All)
+df_3pct['df_3fgm_overall']=df_3fgm$overall
+df_pct3_v1 =  df_3pct
+df_pct3_v1_2 = df_pct3_v1[!is.na(df_3fgm$player_name),]
+p_3FGM3PCT = ggplot(df_pct3_v1_2)+
+geom_point(aes(df_3fgm_overall,overall,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "3pct_overall V.S 3fgm_overall ",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT)
+p_3FGM3PCT_All = ggplot(df_pct3_v1_2)+
+geom_point(aes(df_3fgm_overall,overall,color = player_name,shape = Team_Name),size = 2)+
+labs(title = "3pct_overall V.S 3fgm_overall ",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT_All)
+df_fta['df_ftm_30sec_plusmiuns_5'] = df_ftm$X30sec_plusminus_5
+df_fta_v1 =  df_fta
+df_fta_v1_2 = df_fta_v1[!is.na(df_fta$player_name),]
+df_fta_v1_2$X30sec_plusminus_5
+p_fta_ftm = ggplot(df_fta_v1_2)+
+geom_point(aes(X30sec_plusminus_5,df_ftm_30sec_plusmiuns_5,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+p_fta_ftm = ggplot(df_fta_v1_2)+
+geom_point(aes(X30sec_plusminus_5,
+df_ftm_30sec_plusmiuns_5,
+color = player_name,
+shape=Team_Name),
+size = 2,
+alpha=0.5)+
+labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+p_fta_ftm = ggplot(df_fta_v1_2)+
+geom_point(aes(X30sec_plusminus_5,
+df_ftm_30sec_plusmiuns_5,
+color = player_name,
+shape=Team_Name),
+size = 2,
+alpha=0.5,
+position = "jitter")+
+labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+# average within group 3point
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_3fgm/df_3pct[,1:13]
+deno$player_name = df_3fgm$player_name
+deno$player_id = df_3fgm$player_id
+deno$Team_Name = df_3fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+average3point = df_3fgm_sum/deno_modi
+average3point$Group.1=deno_modi$Group.1
+p1 = ggparcoord(average3point,
+columns = 2:6,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for 3 points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+p1 = ggparcoord(average3point,
+columns = 7:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 0:5, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for 3 points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+# average within group all point
+df_fgm_sum = aggregate(df_fgm[,3:12], list(df_fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_fgm/df_pct[,1:13]
+deno$player_name = df_fgm$player_name
+deno$player_id = df_fgm$player_id
+deno$Team_Name = df_fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+averagepoint = df_fgm_sum/deno_modi
+averagepoint$Group.1=deno_modi$Group.1
+#averagepoint
+p1 = ggparcoord(averagepoint,
+columns = 2:6,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 7:10, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for all points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+p1 = ggparcoord(averagepoint,
+columns = 2:6,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 7:10, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for all points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+ggplot(averagepoint)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+ggplot(average3point)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+ggplot(average3point)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+ggplot(average3point)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+ggplot(averagepoint)+
+geom_point(aes(overall,X10sec_down_3,color = Group.1),size = 3)+
+labs(title = "Team average scatter points Plot",x = 'Overall', y='X10sec_down_3')
+# average within group all point
+df_fgm_sum = aggregate(df_fgm[,3:12], list(df_fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_fgm/df_pct[,1:13]
+deno$player_name = df_fgm$player_name
+deno$player_id = df_fgm$player_id
+deno$Team_Name = df_fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+averagepoint = df_fgm_sum/deno_modi
+averagepoint$Group.1=deno_modi$Group.1
+#averagepoint
+p1 = ggparcoord(averagepoint,
+columns = 2:6,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 7:10, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for all points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+p1 = ggparcoord(averagepoint,
+columns = 2:6,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 7:10, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for all points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+# average within group 3point
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_3fgm/df_3pct[,1:13]
+deno$player_name = df_3fgm$player_name
+deno$player_id = df_3fgm$player_id
+deno$Team_Name = df_3fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+average3point = df_3fgm_sum/deno_modi
+average3point$Group.1=deno_modi$Group.1
+p1 = ggparcoord(average3point,
+columns = 2:6,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 2:11, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for 3 points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+p1 = ggparcoord(average3point,
+columns = 7:10,
+groupColumn ='Group.1',
+scale = 'globalminmax')+
+geom_vline(xintercept = 0:5, color = "lightblue")+
+theme(axis.text.x=element_text(angle=90))+
+labs(title = "Average Parallel Coordinates for 3 points Plot",x = 'Indicator', y='Average')
+ggplotly(p1)
+df_fta['df_ftm_30sec_plusmiuns_5'] = df_ftm$X30sec_plusminus_5
+df_fta_v1 =  df_fta
+df_fta_v1_2 = df_fta_v1[!is.na(df_fta$player_name),]
+df_fta_v1_2$X30sec_plusminus_5
+p_fta_ftm = ggplot(df_fta_v1_2)+
+geom_point(aes(X30sec_plusminus_5,df_ftm_30sec_plusmiuns_5,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+p_fta_ftm = ggplot(df_fta_v1_2)+
+geom_point(aes(X30sec_plusminus_5,
+df_ftm_30sec_plusmiuns_5,
+color = player_name,
+shape=Team_Name),
+size = 1.3,
+alpha=0.5)+
+labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+p_fta_ftm = ggplot(df_fta_v1_2)+
+geom_point(aes(X30sec_plusminus_5,
+df_ftm_30sec_plusmiuns_5,
+color = player_name,
+shape=Team_Name),
+size = 1.3,
+alpha=0.5,
+position = "jitter")+
+labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+df_3pct['df_3fgm_overall']=df_3fgm$overall
+df_pct3_v1 =  df_3pct
+df_pct3_v1_2 = df_pct3_v1[!is.na(df_3fgm$player_name),]
+p_3FGM3PCT = ggplot(df_pct3_v1_2)+
+geom_point(aes(df_3fgm_overall,overall,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "3pct_overall V.S 3fgm_overall ",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT)
+p_3FGM3PCT_All = ggplot(df_pct3_v1_2)+
+geom_point(aes(df_3fgm_overall,overall,color = player_name,shape = Team_Name),size = 2)+
+labs(title = "3pct_overall V.S 3fgm_overall ",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT_All)
+df_pct['df_fgm_overall']=df_fgm$overall
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+p_FGMPCT = ggplot(df_pct_v1_2)+
+geom_point(aes(df_fgm_overall,overall,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "pct_overall V.S fgm_overall ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT)
+p_FGMPCT_All = ggplot(df_pct_v1_2)+
+geom_point(aes(df_fgm_overall,overall,color = player_name,shape = Team_Name),size = 2)+
+labs(title = "pct_overall V.S fgm_overall ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT_All)
+# Define FGA: Field Goal Attempt
+FGA = df_fgm$overall / df_fct$overall
+# Define TSP: True shooting percent
+TSP = df_pts$overall/(2*(FGA+0.44*df_fta$overall))
+df_pts['TSP'] = TSP
+# Make a copy of df_pts
+df_pts_v1 = df_pts
+# Subset to remove all the NAs due to players that did not have a team or did not play in 2016
+df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
+p_TSP = ggplot(df_pts_v1_2)+
+geom_point(aes(overall,TSP,color = player_name),size = 1)+
+facet_wrap(~Team_Name)+
+labs(title = "TSP V.S PTS ",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP)
+p_TSP_All = ggplot(df_pts_v1_2)+
+geom_point(aes(overall,TSP,color = player_name，shape = Team_Name),size = 2)+
+labs(title = "TSP V.S PTS ",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP_All)
+## Preprocess data to merge with the team
+df_name_team = read.csv(file="C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/Name_Team.csv")
+df_name_team = df_name_team[,c("PERSON_ID","Team_Name")]
+colnames(df_name_team)[1] = "player_id"
+my_read = function(path,team=df_name_team){
+temp = read.csv(file=path)
+final = merge(temp,team,by = "player_id",all=TRUE)
+return(final[ ,!(colnames(final) == "X")])
+}
+df_3pct = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/3pct_df.csv")
+df_3fgm = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/3fgm_df.csv")
+df_3 = merge(df_3fgm,df_3pct,by = "player_id",all=TRUE)
+df_pct = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/pct_df.csv")
+df_fgm = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/fgm_df.csv")
+df_all = merge(df_fgm,df_pct,by = "player_id",all=TRUE)
+df_pts = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/pts_df.csv")
+df_fta = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/fta_df.csv")
+df_fct = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/fct_df.csv")
+df_ftm = my_read(path = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA_FINAL/NBA_data/ftm_df.csv")
+library(GGally)
+library(ggplot2)
+library(plotly)

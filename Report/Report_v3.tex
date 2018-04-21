@@ -1,0 +1,288 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  My documentation report
+%  Objetive: Explain what I did and how, so someone can continue with the investigation
+%
+% Important note:
+% Chapter heading images should have a 2:1 width:height ratio,
+% e.g. 920px width and 460px height.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%   PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt,fleqn]{book} % Default font size and left-justified equations
+
+%\usepackage[top=3cm,bottom=3cm,left=3.2cm,right=3.2cm,headsep=10pt,letterpaper]{geometry} % Page margins
+
+\usepackage{xcolor,lipsum} % Required for specifying colors by name
+\definecolor{ocre}{RGB}{51,102,0} 
+\definecolor{lightgray}{RGB}{229,229,229} 
+	
+% Font Settings
+\usepackage{avant} % Use the Avantgarde font for headings
+\usepackage{mathptmx} % Use the Adobe Times Roman as the default text font together with math symbols from the Sym­bol, Chancery and Com­puter Modern fonts
+\usepackage{tikz}
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+\usepackage[utf8]{inputenc} % Required for including letters with accents
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+	
+
+% MATHS PACKAGE
+\usepackage{amsmath,tikz}
+\usetikzlibrary{matrix}
+\newcommand*{\horzbar}{\rule[0.05ex]{2.5ex}{0.5pt}}
+\usepackage{calc}
+
+% VERBATIM PACKAGE
+\usepackage{verbatim}
+
+
+\input{structure} % Insert the commands.tex file which contains the majority of the structure behind the template
+
+
+
+\usepackage{eso-pic}
+\newcommand\BackgroundPic{%
+	\put(0,0){%
+		\parbox[b][\paperheight]{\paperwidth}{%
+			\vfill
+			\centering
+			\includegraphics[width=\paperwidth,height=\paperheight,%
+			keepaspectratio]{background.png}%
+			\vfill
+}}}
+
+
+\begin{document}
+
+\let\cleardoublepage\clearpage
+
+%----------------------------------------------------------------------------------------
+%   TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begingroup
+\thispagestyle{empty}
+\AddToShipoutPicture*{\put(0,0){\includegraphics[scale=1.1]{Background.JPG}}} % Image background
+\centering
+\vspace*{20cm}
+\par\normalfont\fontsize{35}{35}\sffamily\selectfont
+\textbf{NBA Stat V.S. Twitter}\\
+{\LARGE }\par % Book title
+\vspace*{0.5cm}
+{\Huge EDAV Final Project}\par % Author name
+\endgroup
+
+%----------------------------------------------------------------------------------------
+%   TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+\chapterimage{heading.JPG} % heading image
+
+\pagestyle{empty} % No headers
+
+\renewcommand\contentsname{Table of Contents}
+\renewcommand{\bibname}{Bibliographie}
+\tableofcontents% Print the table of contents itself
+
+%\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right
+
+\pagestyle{fancy} % Print headers again
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 0
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Things to do}
+
+\section{Things to do}\index{Things to don}
+
+\vspace{1em}
+1. Interactive plot of the twitter word cloud DONE\\
+2. Interactive heat map on the basketball field  Done\\
+3. parallel coordinate of the average three points / average all points for all teams  DONE\\
+4. individual player scatter plots facet on team DONE\\
+5. do we have any categorical variables for other plots like alluvial graph
+
+
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 1
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Introduction}
+
+\section{Team and Contribution}\index{Team and Contribution}
+
+\vspace{1em}
+
+	Haozheng Ni():\\
+	Chiqi Yang():\\
+	Mingyang Ni():\\
+	Haoran Li():\\
+
+
+\section{Motivation}\index{Motivation}
+
+\vspace{1em}
+	Explain why you chose this topic, and the questions you are interested in studying.
+
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 2
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Description of Data}
+
+\section{Data Collection and Access}\index{Data Collection and Access}
+
+\vspace{1em}
+
+Describe how the data was collected, how you accessed it
+
+
+\section{Noteworthy Features}\index{Noteworthy Features}
+
+\vspace{1em}
+
+Describe some Noteworthy Features
+
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 3
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Analysis of Data Quality}
+
+\section{Data Quality}\index{Motivation}
+
+\vspace{1em}
+Provide a detailed, well-organized description of data quality, using textual description, 
+
+\section{Procedure}\index{Procedure}
+
+\vspace{1em}
+graphs, and code.
+
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 4
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Main Analysis (Exploratory Data Analysis)}
+
+\section{Description of Findings}\index{Description of Findings}
+
+\vspace{1em}
+Provide a detailed, well-organized description of your findings, including textual description, graphs, and code.  Your focus should be on both the results and the process. 
+
+
+
+\section{Challenges}\index{Challenges}
+
+\vspace{1em}
+Include, as reasonable and relevant, approaches that didn't work, challenges, the data cleaning process, etc.
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 5
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Executive Summary}
+
+\section{Presentation}\index{Presentation}
+
+Note: "Presentation" here refers to the style of graph, that is, graphs that are cleaned up for presentation, as opposed to the rough ones we often use for exploratory data analysis. You do not have to present your work to the class! However, you may choose to present your work as your community contribution, in which case you need to email me to set a date before the community contribution due date (Apr 3). (The presentation itself may be later.)
+
+Provide a short nontechnical summary of the most revealing findings of your analysis  written for a nontechnical audience. The length should be approximately two pages (if we were using pages...) Take extra care to clean up your graphs, ensuring that best practices for presentation are followed
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 6
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Interactive Component}
+
+Select 1 (or more) of your key findings to present in an interactive format. Be selective in the choices that you present to the user; the idea is that in 5-10 minutes, users should have a good sense of the trends you've identified in the data.  Make sure that the user is clear on what the tool does and how to use it.
+
+Interactive graphs must follow all of the best practices as with static graphs in terms of perception, labeling, accuracy, etc. 
+
+You may choose the tool (D3, Shiny, or other) The complexity of your tool will be taken into account: we expect more complexity from a higher-level tool like Shiny than a lower-level tool like D3, which requires you to build a lot from scratch.   
+
+Publish your graph somewhere on the web and provide a link in your report in the interactive section. The obvious choices are http://blockbuilder.org/ (Links to an external site.)Links to an external site. to create a block for D3, and https://www.shinyapps.io/ (Links to an external site.)Links to an external site. for Shiny apps but other options are fine. You are encouraged to share experiences on Piazza to help classmates with the publishing process.
+
+\section{Interaction 1}\index{Interaction 1}
+
+\vspace{1em}
+
+
+\section{Interaction 2}\index{Interaction 2}
+
+\vspace{1em}
+
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 7
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Conclusion}
+
+\section{Limitations}\index{Limitations}
+
+\vspace{1em}
+
+\section{Future Directions}\index{Future Directions}
+
+\vspace{1em}
+
+
+%----------------------------------------------------------------------------------------
+%   CHAPTER 8
+%----------------------------------------------------------------------------------------
+
+\chapterimage{chapterheading.JPG} % Chapter heading image
+
+\chapter{Bibliography}
+
+\section{Graph}\index{Graph}
+
+\vspace{1em}
+
+https://ffflyer.com/basketball-game-flyer-template/\\
+http://stats.gleague.nba.com/\\
+http://stats.gleague.nba.com/\\
+
+\section{Packages}\index{Packages}
+
+\vspace{1em}
+
+https://ffflyer.com/basketball-game-flyer-template/\\
+http://stats.gleague.nba.com/\\
+http://stats.gleague.nba.com/\\
+
+\section{Data Source}\index{Data Source}
+
+\vspace{1em}
+
+https://ffflyer.com/basketball-game-flyer-template/\\
+http://stats.gleague.nba.com/\\
+http://stats.gleague.nba.com/\\
+
+\end{document}
+              
