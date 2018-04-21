@@ -1,0 +1,826 @@
+---
+title: "NBA"
+author: Haoran Li 
+date: 3/27/2018
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE, 
+                      cache = FALSE)
+```
+
+```{r}
+library(devtools)
+library(rgdal)
+library(GGally)
+library(ggplot2)
+library(plotly)
+library(scales)
+library(ggthemes)
+library(RColorBrewer)
+library(viridis)
+library(grid)
+library(gridExtra)
+library(ggimage)
+library(png)
+library(gridGraphics)
+library(dplyr)
+library(tidyr)
+library(forcats)
+#devtools::install_github('bart6114/artyfarty')
+library('artyfarty')
+library(tm)
+library(wordcloud)
+```
+
+### Part1 
+
+```{r}
+location = "C:/Users/hrli1/Desktop/2018 Spring/EDA/NBA/NBA-Visualization-/NBA_data/"
+clutch = read.csv(paste(location, 'fetched.csv', sep=""))
+#number of games played vs number of wins
+df1 = clutch[,c('GP','W','team')]
+df1= gather(df1,type,count,-team)
+#df1$count <-  ifelse(df1$type =="W",df1$count*(-1),df1$count)
+temp = df1[df1$type=='GP',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+#df1 <- within(df1, team <- factor(team, levels=names(sort(count,  decreasing=TRUE))))
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_bar(stat="identity",position="identity")+
+  xlab("number of games")+ylab("name of teams")+
+  scale_fill_manual(name="type of games",values = pal("five38"))+
+  coord_flip()+ggtitle("number of games played (GP) v.s number of wins (W)")+
+  geom_hline(yintercept=0)+
+  ylab("number of games")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+#Personal fouls (PF) and turnovers (TOV)
+```{r}
+df1 = clutch[,c('PF','TOV','team')]
+df1= gather(df1,type,count,-team)
+df1$count <-  ifelse(df1$type =="PF",df1$count*(-1),df1$count)
+temp = temp = df1[df1$type=='TOV',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+#df1 <- within(df1, team <- factor(team, levels=names(sort(count,  decreasing=TRUE))))
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_bar(stat="identity",position="identity")+
+  xlab("counts")+ylab("name of teams")+
+  scale_fill_manual(values = pal("five38"))+
+  coord_flip()+ggtitle("Personal fouls (PF) and turnovers (TOV)")+
+  geom_hline(yintercept=0)+
+  ylab("counts")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+
+```{r}
+# divergent plot
+df1 = clutch[,c('PCT_PTS_2PT','PCT_PTS_3PT','PCT_PTS_FT','team')]
+df1= gather(df1,type,count,-team)
+temp =  df1[df1$type=='PCT_PTS_2PT',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+df1$count <-  ifelse(df1$type =="PCT_PTS_2PT",df1$count*(-1),df1$count)
+
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_col()+
+  xlab("percentage")+ylab("name of teams")+
+  scale_fill_manual(values = pal("five38"))+
+  coord_flip()+ggtitle("2PT%,3PT%,FT%")+
+  geom_hline(yintercept=0)+
+  ylab("percentage")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+```{r}
+path = 'https://github.com/NiHaozheng/NBA-Visualization/blob/master/clutch_team/logo/'
+#path = 'https://github.com/lihaoranharry/NBA-Visualization-/tree/master/NBA_data/clutch_team/logo/'
+#img <- "https://github.com/NiHaozheng/NBA-Visualization/blob/master/clutch_team/logo/ATL.png?raw=true"
+df1 = clutch[,c('OFF_RATING','DEF_RATING','team')]
+df1$img = paste(path,df1$team,'.png?raw=true',sep='')
+ggplot(df1,aes(x=OFF_RATING,y=DEF_RATING))+geom_point()+
+  scale_y_reverse()+geom_image(image = df1$img, size = .05)+
+  theme_scientific()+
+  ggtitle("offensive rating v.s. defensive rating")+
+  xlab('offensive rating')+ylab('defensive rating')
+```
+### Part 2
+```{r}
+## Preprocess data to merge with the team 
+df_name_team = read.csv(paste(location, 'Name_Team.csv', sep=""))
+df_name_team = df_name_team[,c("PERSON_ID","Team_Name")]
+colnames(df_name_team)[1] = "player_id"
+
+df_name_team_abbr = read.csv(paste(location, 'abbr_team.csv', sep=""))
+
+my_read = function(path,team=df_name_team){
+  temp = read.csv(file=path)
+  final = merge(temp,team,by = "player_id",all=TRUE)
+  #final$Abbri = df_name_team_abbr
+  return(final[ ,!(colnames(final) == "X")])
+}
+
+
+df_3pct = my_read(path = paste(location,'3pct_df.csv', sep=""))
+df_3fgm = my_read(path = paste(location,'3fgm_df.csv', sep=""))
+
+df_3 = merge(df_3fgm,df_3pct,by = "player_id",all=TRUE)
+
+df_pct = my_read(path = paste(location,'pct_df.csv', sep=""))
+df_fgm = my_read(path = paste(location,'fgm_df.csv', sep=""))
+
+df_all = merge(df_fgm,df_pct,by = "player_id",all=TRUE)
+
+df_pts = my_read(path = paste(location,'pts_df.csv', sep=""))
+
+df_fta = my_read(path = paste(location,'fta_df.csv', sep=""))
+
+df_fct = my_read(path = paste(location,'fct_df.csv', sep=""))
+
+df_ftm = my_read(path = paste(location,'ftm_df.csv', sep=""))
+
+
+  
+```
+
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+# Define FGA: Field Goal Attempt 
+FGA = df_fgm$overall / df_fct$overall
+# Define TSP: True shooting percent 
+TSP = df_pts$overall/(2*(FGA+0.44*df_fta$overall))
+df_pts['TSP'] = TSP
+# Make a copy of df_pts
+df_pts_v1 = df_pts
+# Subset to remove all the NAs due to players that did not have a team or did not play in 2016
+df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
+
+##==================================================================
+#Plot on whole data, all teams 
+p_TSP = ggplot(df_pts_v1_2)+
+  geom_point(aes(overall,TSP,color = player_name),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "TSP V.S PTS Facet on Team",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP)
+
+p_TSP_All = ggplot(df_pts_v1_2)+
+  geom_point(aes(overall,TSP,color = player_name,shape = Team_Name),size = 2)+
+  labs(title = "TSP V.S PTS All Star",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP_All)
+
+##==================================================================
+#Plot on Top4 Last4
+TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs","Lakers","Suns","76ers","Nets")
+TopLowP_TSP = df_pts_v1_2[df_pts_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+p_TSP = ggplot(TopLowP_TSP)+
+  geom_point(aes(overall,TSP,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "TSP V.S PTS Facet on Top4Last4",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP)
+
+p_TSP_All = ggplot(TopLowP_TSP)+
+  geom_point(aes(overall,TSP,color = player_name,shape = Rank),size = 2)+
+  labs(title = "TSP V.S PTS All Star Top4Last4 ",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP_All)
+
+
+
+```
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+##==================================================================
+#Plot on ALL
+df_pct['df_fgm_overall']=df_fgm$overall
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+
+
+p_FGMPCT = ggplot(df_pct_v1_2)+
+  geom_point(aes(df_fgm_overall,overall,color = player_name),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "pct_overall V.S fgm_overall ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT)
+
+p_FGMPCT_All = ggplot(df_pct_v1_2)+
+  geom_point(aes(df_fgm_overall,overall,color = player_name,shape = Team_Name),size = 2)+
+  labs(title = "pct_overall V.S fgm_overall ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT_All)
+
+##==================================================================
+#Plot on Top4 Last4
+df_pct['df_fgm_overall']=df_fgm$overall
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+
+TopLowP_TSP = df_pct_v1_2[df_pct_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+p_FGMPCT = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,overall,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "pct_overall V.S fgm_overall Facet on Top4Last4",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT)
+
+
+p_FGMPCT_All = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,overall,color = player_name,shape =Rank),size = 2)+
+  labs(title = "pct_overall V.S fgm_overall All Star Top4Last4 ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT_All)
+
+
+```
+
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+##==================================================================
+#Plot on All Team
+
+df_3pct['df_3fgm_overall']=df_3fgm$overall
+df_pct3_v1 =  df_3pct
+df_pct3_v1_2 = df_pct3_v1[!is.na(df_3fgm$player_name),]
+
+
+p_3FGM3PCT = ggplot(df_pct3_v1_2)+
+  geom_point(aes(df_3fgm_overall,overall,color = player_name),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "3pct_overall V.S 3fgm_overall ",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT)
+
+
+p_3FGM3PCT_All = ggplot(df_pct3_v1_2)+
+  geom_point(aes(df_3fgm_overall,overall,color = player_name,shape = Team_Name),size = 2)+
+  labs(title = "3pct_overall V.S 3fgm_overall ",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT_All)
+
+##==================================================================
+#Plot on Top4 Last4
+df_3pct['df_3fgm_overall']=df_3fgm$overall
+df_pct3_v1 =  df_3pct
+df_pct3_v1_2 = df_pct3_v1[!is.na(df_3fgm$player_name),]
+
+TopLowP_TSP = df_pct3_v1_2[df_pct3_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+p_3FGM3PCT = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_3fgm_overall,overall,color = player_name,shape=Rank),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "3pct_overall V.S 3fgm_overall Facet on Top4Last4",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT)
+
+
+p_3FGM3PCT_All = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_3fgm_overall,overall,color = player_name,shape=Rank),size = 2)+
+  labs(title = "3pct_overall V.S 3fgm_overall All Star Top4Last4",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT_All)
+
+
+
+```
+
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+##==================================================================
+#Plot on All teams
+
+df_fta['df_ftm_30sec_plusmiuns_5'] = df_ftm$X30sec_plusminus_5
+df_fta_v1 =  df_fta
+df_fta_v1_2 = df_fta_v1[!is.na(df_fta$player_name),]
+
+p_fta_ftm = ggplot(df_fta_v1_2)+
+  geom_point(aes(X30sec_plusminus_5,df_ftm_30sec_plusmiuns_5,color = player_name),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+
+p_fta_ftm = ggplot(df_fta_v1_2)+
+  geom_point(aes(X30sec_plusminus_5,
+                 df_ftm_30sec_plusmiuns_5,
+                 color = player_name,
+                 shape=Team_Name),
+             size = 1.3,
+             alpha=0.5)+
+  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+
+p_fta_ftm = ggplot(df_fta_v1_2)+
+  geom_point(aes(X30sec_plusminus_5,
+                 df_ftm_30sec_plusmiuns_5,
+                 color = player_name,
+                 shape=Team_Name),
+             size = 1.3,
+             alpha=0.5,
+            position = "jitter")+
+  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+
+
+##==================================================================
+#Plot on Top4 Last4
+
+df_fta['df_ftm_30sec_plusmiuns_5'] = df_ftm$X30sec_plusminus_5
+df_fta_v1 =  df_fta
+df_fta_v1_2 = df_fta_v1[!is.na(df_fta$player_name),]
+
+TopLowP_TSP = df_fta_v1_2[df_fta_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+
+p_fta_ftm = ggplot(TopLowP_TSP)+
+  geom_point(aes(X30sec_plusminus_5,df_ftm_30sec_plusmiuns_5,color = player_name, shape=Rank),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 Facet on Top4Last4",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+
+p_fta_ftm = ggplot(TopLowP_TSP)+
+  geom_point(aes(X30sec_plusminus_5,
+                 df_ftm_30sec_plusmiuns_5,
+                 color = player_name,
+                 shape=Rank),
+             size = 1.3,
+             alpha=0.5)+
+  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 All Star Top4Last4",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+
+p_fta_ftm = ggplot(TopLowP_TSP)+
+  geom_point(aes(X30sec_plusminus_5,
+                 df_ftm_30sec_plusmiuns_5,
+                 color = player_name,
+                 shape=Rank),
+             size = 1.3,
+             alpha=0.5,
+            position = "jitter")+
+  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 All Star Top4Last4",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+ggplotly(p_fta_ftm)
+
+```
+
+```{r fig.height = 5, fig.width = 14, fig.align = "center"}
+
+# average within group 3point
+
+
+cbP = c("#999999", "#E69F00", "#56B4E9", "#009E73",
+        "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_3fgm/df_3pct[,1:13]
+deno$player_name = df_3fgm$player_name
+deno$player_id = df_3fgm$player_id
+deno$Team_Name = df_3fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+average3point = df_3fgm_sum/deno_modi
+average3point$Group.1=deno_modi$Group.1
+average3point[is.na(average3point)] = 0
+
+TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs",
+               "Lakers","Suns","76ers","Nets")
+TopLow3point = average3point[average3point$Group.1 %in% TopLowTeam,]
+
+RK = ifelse(TopLow3point$Group.1 %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+TopLow3point['TRk']= RK 
+#TopLow3point
+p1 = ggparcoord(data = TopLow3point,
+                columns =2:7,
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average 3PT Last Xmin yDown Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLow3point$Group.1)
+
+p2 = ggparcoord(data = TopLow3point,
+                columns =c(2,8:11),
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average 3PT Last Xmin yDownorHiger Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLow3point$Group.1)
+
+```
+
+
+```{r fig.height = 12, fig.width = 14, fig.align = "center"}
+# average within group all point
+
+
+
+cbP = c("#999999", "#E69F00", "#56B4E9", "#009E73",
+        "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+df_fgm_sum = aggregate(df_fgm[,3:12], list(df_fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_fgm/df_pct[,1:13]
+deno$player_name = df_fgm$player_name
+deno$player_id = df_fgm$player_id
+deno$Team_Name = df_fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+averagepoint = df_fgm_sum/deno_modi
+averagepoint$Group.1=deno_modi$Group.1
+averagepoint[is.na(averagepoint)] = 0
+
+TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs",
+               "Lakers","Suns","76ers","Nets")
+TopLowpoint = averagepoint[averagepoint$Group.1 %in% TopLowTeam,]
+
+RK = ifelse(TopLowpoint$Group.1 %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+TopLowpoint['TRk']= RK 
+#averagepoint
+
+
+p3 = ggparcoord(data = TopLowpoint,
+                columns =2:7,
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average TotalPT Last Xmin yDown Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLowpoint$Group.1)
+
+p4 = ggparcoord(data = TopLowpoint,
+                columns =c(2,8:11),
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average TotalPT Last Xmin yDownorHiger Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLowpoint$Group.1)
+
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+```
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+##==================================================================
+#Plot on All Teams
+averagepoint=averagepoint[2:31,]
+averagepoint['abbr'] = df_name_team_abbr[,1]
+
+average3point=average3point[2:31,]
+average3point['abbr'] = df_name_team_abbr[,1]
+
+path = 'https://github.com/NiHaozheng/NBA-Visualization/blob/master/clutch_team/logo/'
+averagepoint$img = paste(path,averagepoint$abbr,'.png?raw=true',sep='')
+average3point$img = paste(path,average3point$abbr,'.png?raw=true',sep='')
+
+
+p1 = ggplot(averagepoint,aes(overall,X10sec_down_3))+
+  geom_point()+
+  geom_image(image = averagepoint$img, size = .05)+
+  theme_scientific()+
+  labs(title = "3pt Average 10sec_down_3 v.s. Overall",x = 'Overall', y='X10sec_down_3')
+
+p2 = ggplot(average3point,aes(overall,X10sec_down_3))+
+  geom_point()+
+  geom_image(image = average3point$img, size = .05)+
+  theme_scientific()+
+  labs(title = "Total Average  X10sec_down_3 v.s. Overall",x = 'Overall', y='X10sec_down_3')
+grid.arrange(p1, p2, nrow = 1)
+
+##==================================================================
+#Plot on Top4 Last4
+TopLowP_TSP_1 = averagepoint[averagepoint$Group.1 %in% TopLowTeam,]
+TopLowP_TSP_2 = average3point[average3point$Group.1 %in% TopLowTeam,]
+
+p3 = ggplot(TopLowP_TSP_1,aes(overall,X10sec_down_3))+
+  geom_point()+
+  geom_image(image = TopLowP_TSP_1$img,
+             size = .05)+
+  theme_scientific()+
+  labs(title = "3pt Average 10sec_down_3 v.s. Overall TopDown4",x = 'Overall', y='X10sec_down_3')
+
+p4 = ggplot(TopLowP_TSP_2,aes(overall,X10sec_down_3))+
+  geom_point()+
+  geom_image(image = TopLowP_TSP_2$img,
+             size = .05)+
+  theme_scientific()+
+  labs(title = "Total Average  X10sec_down_3 v.s. Overall TopDown4",x = 'Overall', y='X10sec_down_3')
+grid.arrange(p3, p4, nrow = 1)
+```
+
+### Part3
+
+```{r fig.height = 15, fig.width = 15, fig.align = "center"}
+##==================================================================
+#Every Team
+
+ggplot()+
+  geom_point(data =df_pct,
+             aes(x = X1min_down_5, y= overall),
+             position = position_jitter(w = 0.01, h = 0.02),
+             alpha = 0.5,
+             size = 3)+
+  facet_wrap(~Team_Name)+
+  labs(title = "overall V.S X1min_down_5",
+       x = 'X1min_down_5', 
+       y='overall')
+##==================================================================
+#Plot on Top4 Last4
+TopLowP_TSP_1 = df_pct[df_pct$Team_Name %in% TopLowTeam,]
+ggplot()+
+  geom_point(data =TopLowP_TSP_1,
+             aes(x = X1min_down_5, y= overall),
+             position = position_jitter(w = 0.01, h = 0.02),
+             alpha = 0.5,
+             size = 3)+
+  facet_wrap(~Team_Name)+
+  labs(title = "overall V.S X1min_down_5",
+       x = 'X1min_down_5', 
+       y='overall')
+```
+
+```{r fig.height = 15, fig.width = 15, fig.align = "center"}
+##==================================================================
+#Plot on everyteam 
+
+pp = ggplot()+
+  geom_point(data =df_all,
+             aes(x = X5min_plusminus_5.x, y= X5min_plusminus_5.y,color = player_name.x),
+             position = position_jitter(w = 0.01, h = 0.02),
+             alpha = 0.5,
+             size = 2)+
+  facet_wrap(~Team_Name.x)+
+  labs(title = "5min_plusminus_5_percent V.S X5min_plusminus_5_actual",
+       x = 'X5min_plusminus_5_actual', 
+       y='5min_plusminus_5_percent')
+ggplotly(pp)
+
+##==================================================================
+#Plot on Top4 Last4
+TopLowP_TSP_1 = df_all[df_all$Team_Name.y %in% TopLowTeam,]
+TopLowP_TSP_1['Rank'] = ifelse(TopLowP_TSP_1$Team_Name.y %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+pp = ggplot()+
+  geom_point(data =TopLowP_TSP_1,
+             aes(x = X5min_plusminus_5.x,
+                 y= X5min_plusminus_5.y,
+                 color = player_name.x,
+                 shape = Rank),
+             position = position_jitter(w = 0.01, h = 0.02),
+             alpha = 0.5,
+             size = 2)+
+  facet_wrap(~Team_Name.x)+
+  labs(title = "5min_plusminus_5_percent V.S X5min_plusminus_5_actual",
+       x = 'X5min_plusminus_5_actual', 
+       y='5min_plusminus_5_percent')
+ggplotly(pp)
+```
+
+
+
+```{r fig.height = 20, fig.width = 20, fig.align = "center"}
+pairs(df_all[c("X10sec_down_3.x","X10sec_down_3.y","X30sec_down_3.x","X30sec_down_3.y")])
+```
+
+```{r fig.height = 20, fig.width = 20, fig.align = "center"}
+#df_all
+pairs(df_all[c("X1min_down_5.x","X1min_down_5.y",
+               "X3min._down_5.x","X3min._down_5.y",
+               "X5min._down_5.x","X5min._down_5.y")])
+```
+
+```{r fig.height = 20, fig.width = 20, fig.align = "center"}
+#df_all
+pairs(df_all[c("X30sec_plusminus_5.x","X30sec_plusminus_5.y",
+               "X1min_plusminus_5.x","X1min_plusminus_5.y",
+               "X3min_plusminus_5.x","X3min_plusminus_5.y")])
+```
+
+
+```{r fig.height = 5, fig.width = 5, fig.align = "center"}
+##==================================================================
+#Plot on All team
+
+df_all$Team_Name.x = as.factor(df_all$Team_Name.x)
+countorder = df_all %>% group_by(Team_Name.x) %>% summarize(av=mean(overall.x, na.rm=TRUE))
+
+#df_all = merge(df_fgm,df_pct,by = "player_id",all=TRUE)
+ggplot(countorder, aes(reorder(Team_Name.x,av),av)) + 
+  geom_col(color = "tomato", fill = "orange", alpha = .2)+
+  coord_flip()+
+  theme_scientific()+
+  labs(title = "Team Average Overall fgm",x = 'Team', y='Average Overall fgm')
+
+##==================================================================
+#Plot on Top4 Last4
+TopLowP_TSP_1 = df_all[df_all$Team_Name.y %in% TopLowTeam,]
+countorder = TopLowP_TSP_1 %>% group_by(Team_Name.x) %>% summarize(av=mean(overall.x, na.rm=TRUE))
+countorder['Rank'] = ifelse(countorder$Team_Name.x %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+#countorder
+countorder
+ggplot(countorder, aes(reorder(Team_Name.x,av),av,fill = Rank)) + 
+  geom_col()+
+  coord_flip()+
+  theme_scientific()+
+  labs(title = "Team Average Overall fgm",x = 'Team', y='Average Overall fgm')+
+  scale_colour_colorblind("Rank",
+                          labels=countorder$Rank)
+
+```
+### Part4
+
+```{r}
+#TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs","Lakers","Suns","76ers","Nets")
+tweet_content = readr::read_file(paste(location,'Twitter/tweet_content.txt', sep=""))
+Spurs_tweet_content = readr::read_file(paste(location,'Twitter/By Team/Spurs.txt',sep=""))
+Warriors_tweet_content = readr::read_file(paste(location,'Twitter/By Team/Warriors.txt',sep=""))
+Lakers_tweet_content = readr::read_file(paste(location,'Twitter/By Team/Lakers.txt',sep=""))
+T76ers_tweet_content = readr::read_file(paste(location,'Twitter/By Team/76ers.txt',sep=""))
+                                       
+```
+
+```{r}
+My_word_cloud = function(tweet_content,min_freq){
+  docs = Corpus(VectorSource(tweet_content)) %>%
+  tm_map(removePunctuation) %>%
+  tm_map(removeNumbers) %>%
+  tm_map(tolower)  %>%
+  tm_map(removeWords, stopwords("english")) %>%
+  tm_map(stripWhitespace) %>%
+  tm_map(PlainTextDocument)
+
+  tdm = TermDocumentMatrix(docs) %>%
+  as.matrix()
+
+  content = as.matrix(tdm[,1])
+  content = as.matrix(content[order(content, decreasing=TRUE),])
+
+  print("head(Whole twitter)")
+  print(head(content))
+  print("Whole twitter's most occuring words:")
+  print(head(rownames(content)))
+
+  pal <- brewer.pal(9, "YlGnBu")
+  pal <- pal[-(1:3)]
+
+  wordcloud(rownames(content), content, min.freq =min_freq, scale=c(5, .2), random.order = FALSE, random.color = FALSE, colors= pal)
+}
+```
+
+```{r fig.height = 10, fig.width = 10, fig.align = "center"}
+## Let's look at what is going on if we plot the twitter!
+My_word_cloud(tweet_content = tweet_content,min_freq=150)
+
+```
+
+
+
+```{r fig.height = 6, fig.width = 6, fig.align = "center"}
+## Let's look at what is going on WITH TEAM
+splited_Spurs = strsplit(T76ers_tweet_content, "\n")
+splited_Spurs_2 = split(splited_Spurs[[1]], 1:2)
+
+tweet_time = c()
+for (i in 1:length(splited_Spurs_2[[1]])){
+  tweet_time = c(tweet_time,strsplit(splited_Spurs_2[[1]][i]," ")[[1]][4])
+}
+Spurs_df = data.frame("Date"=tweet_time,"content"=splited_Spurs_2[[2]])
+
+sp = paste(splited_Spurs_2[[2]], collapse=' ')
+sp = gsub("76ers", "", sp)
+My_word_cloud(tweet_content = sp, min_freq = 10)
+
+#======================================================================
+
+splited_Spurs = strsplit(Spurs_tweet_content, "\n")
+splited_Spurs_2 = split(splited_Spurs[[1]], 1:2)
+
+tweet_time = c()
+for (i in 1:length(splited_Spurs_2[[1]])){
+  tweet_time = c(tweet_time,strsplit(splited_Spurs_2[[1]][i]," ")[[1]][4])
+}
+Spurs_df = data.frame("Date"=tweet_time,"content"=splited_Spurs_2[[2]])
+
+
+sp = paste(splited_Spurs_2[[2]], collapse=' ')
+sp = gsub("Spurs", "", sp)
+sp = gsub("spurs", "", sp)
+My_word_cloud(tweet_content = sp, min_freq = 15)
+
+#======================================================================
+
+splited_Spurs = strsplit(Warriors_tweet_content, "\n")
+splited_Spurs_2 = split(splited_Spurs[[1]], 1:2)
+
+tweet_time = c()
+for (i in 1:length(splited_Spurs_2[[1]])){
+  tweet_time = c(tweet_time,strsplit(splited_Spurs_2[[1]][i]," ")[[1]][4])
+}
+Spurs_df = data.frame("Date"=tweet_time,"content"=splited_Spurs_2[[2]])
+
+
+sp = paste(splited_Spurs_2[[2]], collapse=' ')
+sp = gsub("Warriors", "", sp)
+sp = gsub("warriors", "", sp)
+My_word_cloud(tweet_content = sp, min_freq = 15)
+
+#======================================================================
+
+splited_Spurs = strsplit(Lakers_tweet_content, "\n")
+splited_Spurs_2 = split(splited_Spurs[[1]], 1:2)
+
+tweet_time = c()
+for (i in 1:length(splited_Spurs_2[[1]])){
+  tweet_time = c(tweet_time,strsplit(splited_Spurs_2[[1]][i]," ")[[1]][4])
+}
+Spurs_df = data.frame("Date"=tweet_time,"content"=splited_Spurs_2[[2]])
+
+
+sp = paste(splited_Spurs_2[[2]], collapse=' ')
+sp = gsub("Lakers", "", sp)
+sp = gsub("lakers", "", sp)
+My_word_cloud(tweet_content = sp, min_freq = 15)
+
+```
+
+```{r}
+pro_76 = read.csv(paste(location,'Twitter/By Team preprocessed_data/preprocessed_76ers.csv', sep=""),
+                  colClasses=c("NULL", NA, NA))
+pro_spurs = read.csv(paste(location,'Twitter/By Team preprocessed_data/preprocessed_Spurs.csv', sep=""),
+                  colClasses=c("NULL", NA, NA))
+pro_warriours = read.csv(paste(location,'Twitter/By Team preprocessed_data/preprocessed_Warriors.csv', sep=""),
+                  colClasses=c("NULL", NA, NA))
+pro_lakers = read.csv(paste(location,'Twitter/By Team preprocessed_data/preprocessed_Lakers.csv', sep=""),
+                  colClasses=c("NULL", NA, NA))
+temp_1 = merge(pro_76, pro_spurs,by ='time',  all=TRUE)
+names(temp_1) = c("time","76er", "spurs")
+temp_1 = merge(temp_1, pro_warriours,by ='time',  all=TRUE)
+names(temp_1) = c("time","76er", "spurs","pro_warriours")
+temp_1 = merge(temp_1, pro_lakers,by ='time',  all=TRUE)
+names(temp_1) = c("time","76er", "spurs","pro_warriours","pro_lakers")
+temp_1[temp_1=="[]"]=NA
+```
+
+```{r fig.height = 15, fig.width = 15, fig.align = "center"}
+#mydf = temp_1[sample(nrow(temp_1), 1000), ]## random sample 1000 rows/records
+
+my_missing = function(seg,title){
+  tidydf <- seg %>% 
+    gather(key, value, -time) %>%
+    mutate(missing = ifelse(is.na(value), "yes", "no"))
+  tidydf <- tidydf %>%
+    mutate(missing2 = ifelse(missing == "yes", 1, 0))
+  p = ggplot(tidydf, aes(x = fct_reorder(key, -missing2, sum), y = fct_reorder(time, -missing2, sum))) +
+    geom_tile(color = "white",aes(fill = missing))+
+    theme(axis.text.x=element_text(),
+        axis.text.y=element_text(size=2,angle=90))+
+    labs(title = title,x = 'Team', y='Time')+
+    scale_fill_manual(values=c("slategray2", "tomato2"))
+  return(p)
+}
+###data is too huge seperate based on time to see pattern:
+#### 	02:00:00-5:00:00
+p1 = my_missing(temp_1[1:213,],title = "Missing 02:00:00-5:00:00")
+#### 15:30:00-16:00:00
+p2 = my_missing(temp_1[214:1002,],title = "Missing 15:30:00-16:00:00")
+####  16:00:00-16:30:00
+p3 = my_missing(temp_1[1003:1961,],title = "Missing 16:00:00-16:30:00")
+####  16:30:00-17:00:00
+p4 = my_missing(temp_1[1962:2829,],title = "Missing 16:30:00-17:00:00")
+####  17:00:00-17:30:00
+p5 = my_missing(temp_1[2829:3708,],title = "Missing 17:00:00-17:30:00")
+####  17:30:00-18:30:00
+p6 = my_missing(temp_1[3708:4667,],title = "Missing 17:30:00-18:30:00")
+####  18:30:00-19:00:00
+p7 = my_missing(temp_1[4667:5461,],title = "Missing 18:30:00-19:00:00")
+grid.arrange(p2,p3,p4,p5,p6, nrow = 1)
+```
+
+
+
+
+
