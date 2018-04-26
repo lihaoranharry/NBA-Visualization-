@@ -192,6 +192,45 @@ p_TSP_All = ggplot(TopLowP_TSP)+
   labs(title = "TSP V.S PTS All Star Top4Last4 ",x = 'Overall PTS', y='Overall TSP')
 ggplotly(p_TSP_All)
 
+#=++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Define FGA: Field Goal Attempt on X5min_plusminus_5
+FGA = df_fgm$X5min_plusminus_5 / df_fct$X5min_plusminus_5
+# Define TSP: True shooting percent 
+TSP = df_pts$X5min_plusminus_5/(2*(FGA+0.44*df_fta$X5min_plusminus_5))
+df_pts['TSP'] = TSP
+# Make a copy of df_pts
+df_pts_v1 = df_pts
+# Subset to remove all the NAs due to players that did not have a team or did not play in 2016
+df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
+
+##==================================================================
+#Plot on whole data, all teams 
+p_TSP = ggplot(df_pts_v1_2)+
+  geom_point(aes(X5min_plusminus_5,TSP,color = player_name),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "TSP V.S PTS Facet on Team",x = 'X5min_plusminus_5 PTS', y='X5min_plusminus_5 TSP')
+ggplotly(p_TSP)
+
+p_TSP_All = ggplot(df_pts_v1_2)+
+  geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape = Team_Name),size = 2)+
+  labs(title = "TSP V.S PTS All Star",x = 'X5min_plusminus_5 PTS', y='X5min_plusminus_5 TSP')
+ggplotly(p_TSP_All)
+
+##==================================================================
+#Plot on Top4 Last4
+TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs","Lakers","Suns","76ers","Nets")
+TopLowP_TSP = df_pts_v1_2[df_pts_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+p_TSP = ggplot(TopLowP_TSP)+
+  geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "TSP V.S PTS Facet on X5min_plusminus_5 Top4Last4",x = 'X5min_plusminus_5 PTS', y='X5min_plusminus_5 TSP')
+ggplotly(p_TSP)
+
+p_TSP_All = ggplot(TopLowP_TSP)+
+  geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape = Rank),size = 2)+
+  labs(title = "TSP V.S PTS All Star X5min_plusminus_5 Top4Last4 ",x = 'X5min_plusminus_5 PTS', y='X5min_plusminus_5 TSP')
+ggplotly(p_TSP_All)
 
 
 ```
@@ -234,6 +273,70 @@ ggplotly(p_FGMPCT)
 p_FGMPCT_All = ggplot(TopLowP_TSP)+
   geom_point(aes(df_fgm_overall,overall,color = player_name,shape =Rank),size = 2)+
   labs(title = "pct_overall V.S fgm_overall All Star Top4Last4 ",x = 'fgm_overall', y='pct_overall')
+ggplotly(p_FGMPCT_All)
+
+#=++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+##==================================================================
+#Plot on Top4 Last4
+df_pct['df_fgm_overall']=df_fgm$X10sec_down_3
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+
+TopLowP_TSP = df_pct_v1_2[df_pct_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+p_FGMPCT = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,X10sec_down_3,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "pct_X10sec_down_3 V.S fgm_X10sec_down_3 Facet on Top4Last4",x = 'fgm_X10sec_down_3', y='pct_X10sec_down_3')
+ggplotly(p_FGMPCT)
+
+
+p_FGMPCT_All = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,X10sec_down_3,color = player_name,shape =Rank),size = 2)+
+  labs(title = "pct_X10sec_down_3 V.S fgm_X10sec_down_3 All Star Top4Last4 ",x = 'fgm_X10sec_down_3', y='pct_X10sec_down_3')
+ggplotly(p_FGMPCT_All)
+
+
+##=============
+df_pct['df_fgm_overall']=df_fgm$X30sec_plusminus_5
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+
+TopLowP_TSP = df_pct_v1_2[df_pct_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+p_FGMPCT = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,X30sec_plusminus_5,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "pct_X30sec_plusminus_5 V.S fgm_X30sec_plusminus_5 Facet on Top4Last4",x = 'fgm_X30sec_plusminus_5', y='pct_X30sec_plusminus_5')
+ggplotly(p_FGMPCT)
+
+
+p_FGMPCT_All = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,X30sec_plusminus_5,color = player_name,shape =Rank),size = 2)+
+  labs(title = "pct_X30sec_plusminus_5 V.S fgm_X30sec_plusminus_5 All Star Top4Last4 ",x = 'fgm_X30sec_plusminus_5', y='pct_X30sec_plusminus_5')
+ggplotly(p_FGMPCT_All)
+
+##=============
+df_pct['df_fgm_overall']=df_fgm$X10sec_down_3
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+
+TopLowP_TSP = df_pct_v1_2[df_pct_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+p_FGMPCT = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,X10sec_down_3,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "pct_X10sec_down_3 V.S fgm_X10sec_down_3 Facet on Top4Last4",x = 'fgm_X10sec_down_3', y='pct_X10sec_down_3')
+ggplotly(p_FGMPCT)
+
+
+p_FGMPCT_All = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,X10sec_down_3,color = player_name,shape =Rank),size = 2)+
+  labs(title = "pct_X10sec_down_3 V.S fgm_X10sec_down_3 All Star Top4Last4 ",x = 'fgm_X10sec_down_3', y='pct_X10sec_down_3')
 ggplotly(p_FGMPCT_All)
 
 
